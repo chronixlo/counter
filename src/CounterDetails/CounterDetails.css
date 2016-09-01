@@ -1,0 +1,17 @@
+.counterdetails {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #dedede;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.counterdetails-close {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    font-size: 2em;
+    margin-bottom: 40px;
+}
