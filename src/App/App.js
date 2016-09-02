@@ -13,17 +13,17 @@ class App extends Component {
         
         this.state =  {
             items: stored || [{
-                name: 'New item',
+                properties: {
+                    name: 'New item'
+                },
                 counts: [],
                 id: Date.now()
             }]
         };
         
         this.addItem = this.addItem.bind(this);
-        this.onSelect = this.onSelect.bind(this);
-        this.onUpdate = this.onUpdate.bind(this);
-        this.closeDetails = this.closeDetails.bind(this);
-        this.deleteCounter = this.deleteCounter.bind(this);
+        this.onClose = this.onClose.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
     
     componentDidUpdate() {
@@ -32,7 +32,9 @@ class App extends Component {
     
     addItem() {
         this.state.items.push({
-            name: 'New item',
+            properties: {
+                name: 'New item'
+            },
             counts: [],
             id: Date.now()
         });
@@ -40,9 +42,9 @@ class App extends Component {
         this.setState(this.state);
     }
     
-    onUpdate(index, data) {
+    onIncrement(index) {
         var items = this.state.items.slice();
-        items[index] = data;
+        items[index].counts.push(new Date());
         
         this.setState({
             items: items
@@ -55,10 +57,10 @@ class App extends Component {
         });
     }
     
-    closeDetails(data) {
+    onClose(properties) {
         var items = this.state.items.slice();
         
-        items[this.state.selectedCounter] = data;
+        items[this.state.selectedCounter].properties = properties;
         
         this.setState({
             selectedCounter: undefined,
@@ -66,7 +68,7 @@ class App extends Component {
         });
     }
     
-    deleteCounter() {
+    onDelete() {
         var items = this.state.items.slice();
         
         items.splice(this.state.selectedCounter, 1);
@@ -83,10 +85,9 @@ class App extends Component {
                 {
                     this.state.selectedCounter !== undefined &&
                         <CounterDetails
-                            close={this.closeDetails}
-                            index={this.state.selectedCounter}
+                            close={this.onClose}
                             data={this.state.items[this.state.selectedCounter]}
-                            onDelete={this.deleteCounter} />
+                            delete={this.onDelete} />
                 }
                 
                 <div className="app-counter-list">
@@ -94,10 +95,9 @@ class App extends Component {
                         this.state.items.map((item, index) => 
                             <Counter
                                 key={item.id}
-                                index={index}
                                 data={item}
-                                onSelect={this.onSelect}
-                                onUpdate={this.onUpdate} />
+                                select={this.onSelect.bind(this, index)}
+                                increment={this.onIncrement.bind(this, index)} />
                         )
                     }
                 </div>

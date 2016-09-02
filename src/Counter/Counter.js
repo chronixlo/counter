@@ -2,36 +2,14 @@ import React, { Component } from 'react';
 import './Counter.css';
 
 class Counter extends Component {
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            data: this.props.data
-        };
-        
-        this.increment = this.increment.bind(this);
-        this.rename = this.rename.bind(this);
-        this.onUpdate = this.onUpdate.bind(this);
-    }
-    
-    increment() {
-        var data = this.state.data;
-        
-        data.counts.push(new Date());
-        this.setState({
-            data: data
-        });
-        
-        this.onUpdate();
-    }
-    
     countToday() {
-        let count = 0;
-        let now = new Date();
-        let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const now = new Date();
+        const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
-        for (let i = this.state.data.counts.length - 1; i >= 0; i--) {
-            if (new Date(this.state.data.counts[i]) < midnight) {
+        let count = 0;
+        
+        for (let i = this.props.data.counts.length - 1; i >= 0; i--) {
+            if (new Date(this.props.data.counts[i]) < midnight) {
                 break;
             }
             
@@ -41,37 +19,16 @@ class Counter extends Component {
         return count;
     }
     
-    rename() {
-        let name = prompt('Give name');
-        
-        if (!name) {
-            return;
-        }
-        
-        let data = this.state.data;
-        
-        data.name = name;
-        this.setState({
-            data: data
-        });
-        
-        this.onUpdate();
-    }
-    
-    onUpdate() {
-        this.props.onUpdate(this.props.index, this.state.data);
-    }
-    
     render() {
         return (
             <div className="counter">
                 <div></div>
-                <div onClick={this.props.onSelect.bind(this, this.props.index)}>
-                    <span className="counter-name">{this.state.data.name}</span>
+                <div onClick={this.props.select}>
+                    <span className="counter-name">{this.props.data.properties.name}</span>
                     <div className="counter-count">{this.countToday()}</div>
                 </div>
                 <div>
-                    <span onClick={this.increment} className="counter-increment">+</span>
+                    <span onClick={this.props.increment} className="counter-increment">+</span>
                 </div>
             </div>
         )

@@ -6,7 +6,7 @@ class CounterDetails extends Component {
         super(props);
         
         this.state = {
-            data: this.props.data,
+            properties: this.props.data.properties,
             confirmDelete: false,
             timeout: undefined
         };
@@ -21,15 +21,15 @@ class CounterDetails extends Component {
     }
     
     close() {
-        this.props.close(this.state.data);
+        this.props.close(this.state.properties);
     }
     
     nameChange(e) {
-        let data = this.state.data;
+        let properties = this.state.properties;
+        properties.name = e.target.value;
         
-        data.name = e.target.value;
         this.setState({
-            data: data
+            properties: properties
         });
     }
     
@@ -45,9 +45,8 @@ class CounterDetails extends Component {
                 confirmDelete: true,
                 timeout: timeout
             });
-            
         } else {
-            this.props.onDelete();
+            this.props.delete();
         }
     }
     
@@ -59,9 +58,11 @@ class CounterDetails extends Component {
                 </div>
                 
                 <label htmlFor="name" className="label">Name</label>
-                <input type="text" id="name" className="input" value={this.state.data.name} onChange={this.nameChange} />
+                <input type="text" id="name" className="input" value={this.state.properties.name} onChange={this.nameChange} />
                 
-                <span onClick={this.deleteCounter} className="button">{this.state.confirmDelete ? 'Click again to confirm' : 'Delete counter'}</span>
+                <span onClick={this.deleteCounter} className="button">
+                    {this.state.confirmDelete ? 'Click again to confirm' : 'Delete counter'}
+                </span>
             </div>
         )
     }
