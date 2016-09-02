@@ -11,36 +11,42 @@ class App extends Component {
         
         stored = stored && JSON.parse(stored);
         
-        this.state = stored || {
-            items: [{
+        this.state =  {
+            items: stored || [{
                 name: 'New item',
-                counts: []
+                counts: [],
+                id: Date.now()
             }]
         };
         
         this.addItem = this.addItem.bind(this);
         this.onSelect = this.onSelect.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
-        this.storeState = this.storeState.bind(this);
         this.closeDetails = this.closeDetails.bind(this);
+        this.deleteCounter = this.deleteCounter.bind(this);
+    }
+    
+    componentDidUpdate() {
+        localStorage.setItem('data', JSON.stringify(this.state.items));
     }
     
     addItem() {
         this.state.items.push({
             name: 'New item',
-            counts: []
+            counts: [],
+            id: Date.now()
         });
         
         this.setState(this.state);
-        
-        this.storeState();
     }
     
     onUpdate(index, data) {
-        this.state.items[index] = data;
-        this.setState(this.state);
+        var items = this.state.items.slice();
+        items[index] = data;
         
-        this.storeState();
+        this.setState({
+            items: items
+        });
     }
     
     onSelect(index) {
@@ -49,16 +55,26 @@ class App extends Component {
         });
     }
     
-    storeState() {
-        localStorage.setItem('data', JSON.stringify(this.state));
+    closeDetails(data) {
+        var items = this.state.items.slice();
+        
+        items[this.state.selectedCounter] = data;
+        
+        this.setState({
+            selectedCounter: undefined,
+            items: items
+        });
     }
     
-    closeDetails(data) {
-        this.state.items[this.state.selectedCounter] = data;
-        this.state.selectedCounter = undefined;
+    deleteCounter() {
+        var items = this.state.items.slice();
         
-        this.setState(this.state);
-        this.storeState();
+        items.splice(this.state.selectedCounter, 1);
+        
+        this.setState({
+            selectedCounter: undefined,
+            items: items
+        });
     }
     
     render() {
@@ -69,14 +85,15 @@ class App extends Component {
                         <CounterDetails
                             close={this.closeDetails}
                             index={this.state.selectedCounter}
-                            data={this.state.items[this.state.selectedCounter]} />
+                            data={this.state.items[this.state.selectedCounter]}
+                            onDelete={this.deleteCounter} />
                 }
                 
                 <div className="app-counter-list">
                     {
                         this.state.items.map((item, index) => 
                             <Counter
-                                key={index}
+                                key={item.id}
                                 index={index}
                                 data={item}
                                 onSelect={this.onSelect}

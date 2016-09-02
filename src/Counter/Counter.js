@@ -15,8 +15,12 @@ class Counter extends Component {
     }
     
     increment() {
-        this.state.data.counts.push(new Date());
-        this.setState(this.state);
+        var data = this.state.data;
+        
+        data.counts.push(new Date());
+        this.setState({
+            data: data
+        });
         
         this.onUpdate();
     }
@@ -27,7 +31,7 @@ class Counter extends Component {
         let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
         for (let i = this.state.data.counts.length - 1; i >= 0; i--) {
-            if (this.state.data.counts[i] < midnight) {
+            if (new Date(this.state.data.counts[i]) < midnight) {
                 break;
             }
             
@@ -44,8 +48,12 @@ class Counter extends Component {
             return;
         }
         
-        this.state.data.name = name;
-        this.setState(this.state);
+        let data = this.state.data;
+        
+        data.name = name;
+        this.setState({
+            data: data
+        });
         
         this.onUpdate();
     }
